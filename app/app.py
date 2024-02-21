@@ -5,7 +5,7 @@ import joblib
 
 app = Flask(__name__)
 
-model = joblib.load('model.pkl')
+model = joblib.load('models/model.pkl')
 
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
@@ -45,7 +45,7 @@ def predict():
             'alone': [alone]}
 
         df = pd.DataFrame(data)
-        scaler = joblib.load('scaler_titanic.pkl')
+        scaler = joblib.load('models/scaler_titanic.pkl')
         scaled_data = scaler.transform(df)
 
         prediction = model.predict(scaled_data)
