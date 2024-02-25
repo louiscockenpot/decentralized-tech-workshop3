@@ -1,0 +1,18 @@
+{
+    "models": [
+        {
+            "model_url": "https://ecd0-195-132-31-187.ngrok-free.app/predict",
+            "model_acc": 0.61236,
+            "deposit": 729.0,
+            "predictions_count": 5,
+            "penalties": 3
+        },
+        {
+            "model_url": "https://ecd0-195-132-31-187.ngrok-free.app/predict",
+            "model_acc": 0.61965,
+            "deposit": 729.0,
+            "predictions_count": 5,
+            "penalties": 3
+        }
+    ]
+}
