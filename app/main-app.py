@@ -100,7 +100,7 @@ def predict():
         #update models
         for i, model in enumerate(models):
             model['predictions_count'] += 1
-            if consensus_prediction == predictions[i][0]:
+            if consensus_prediction != predictions[i][0]:
                 model['penalties'] += 1
                 model['deposit'] -= 0.1 * model['deposit']
                 model['model_acc'] -= 0.1 * model['model_acc']
