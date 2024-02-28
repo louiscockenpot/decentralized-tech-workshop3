@@ -4,7 +4,8 @@ CREATE TABLE products (
     description TEXT,
     price DECIMAL(10, 2),
     category VARCHAR(255),
-    stock_status BOOLEAN
+    stock_status BOOLEAN,
+    image_url TEXT
 );
 
 CREATE TABLE orders (
