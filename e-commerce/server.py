@@ -16,41 +16,41 @@ def index():
 def get_products():
     if request.method == 'POST':
         cursor = db_connection.cursor()
-        cursor.execute("INSERT INTO products (name, description, price, category, stock_status) VALUES (%s, %s, %s)", (request.form['name'], request.form['description'], request.form['price'], request.form['category'], request.form['stock_status']))
+        cursor.execute("INSERT INTO products (name, description, price, category, stock_status, image_url) VALUES (%s, %s, %s, %s, %s, %s)", (request.form['name'], request.form['description'], request.form['price'], request.form['category'], request.form['stock_status'], request.form['image_url']))
         db_connection.commit()
         cursor.close()
-        return jsonify(name=request.form['name'], description=request.form['description'], price=request.form['price'], category=request.form['category'], stock_status=request.form['stock_status'])
+        return redirect(url_for('get_products'))
     
     elif request.method == 'GET':
         cursor = db_connection.cursor()
         cursor.execute("SELECT * FROM products")
         products = cursor.fetchall()
         cursor.close()
-        #return jsonify(products=products)
         return render_template('products.html', products=products)
 
-@app.route('/products/:id', methods=['GET', 'PUT', 'DELETE'])
+@app.route('/products/<int:id>', methods=['GET', 'PUT', 'POST']) # Add POST method to handle delete request
 def get_product(id):
     if request.method == 'PUT':
         cursor = db_connection.cursor()
         cursor.execute("UPDATE products SET name = %s, description = %s, price = %s , category = %s, stock_status = %s, WHERE id = %s", (request.form['name'], request.form['description'], request.form['price'], request.form['category'], request.form['stock_status'], id))
         db_connection.commit()
         cursor.close()
-        return jsonify(name=request.form['name'], description=request.form['description'], price=request.form['price'], category=request.form['category'], stock_status=request.form['stock_status'])
-    
-    elif request.method == 'DELETE':
+        return redirect(url_for('get_products'))
+
+    # Delete request:
+    elif request.method == 'POST' and request.form.get('_method') == 'DELETE':
         cursor = db_connection.cursor()
         cursor.execute(f"DELETE FROM products WHERE id = {id}")
         db_connection.commit()
         cursor.close()
-        return {'status': 'success'}
+        return redirect(url_for('get_products'))
     
     elif request.method == 'GET':
         cursor = db_connection.cursor()
         cursor.execute(f"SELECT * FROM products WHERE id = {id}")
         product = cursor.fetchone()
         cursor.close()
-        return jsonify(product=product)
+        return render_template('product.html', product=product)
     
 @app.route('/orders', methods=['POST'])
 def get_orders():
@@ -77,7 +77,7 @@ def get_cart(userId):
         cursor.execute("INSERT INTO cart (user_id, product_id, quantity) VALUES (%s, %s, %s)", (userId, request.form['product_id'], request.form['quantity']))
         db_connection.commit()
         cursor.close()
-        return redirect(url_for('cart/:userId', userId=userId))
+        return redirect(url_for('get_cart', userId=userId))
     
     elif request.method == 'GET':
         cursor = db_connection.cursor()
@@ -93,7 +93,8 @@ def delete_cart_item(userId, productId):
         cursor.execute(f"DELETE FROM cart WHERE user_id = {userId} AND product_id = {productId}")
         db_connection.commit()
         cursor.close()
-        return redirect(url_for('cart/:userId', userId=userId))
+        #return redirect(url_for('cart/:userId', userId=userId))
+        return jsonify({'status': 'success'})
 
 if __name__ == '__main__':
-    app.run(debug=True, port=3001)
+    app.run(host='0.0.0.0', debug=True, port=3001)
